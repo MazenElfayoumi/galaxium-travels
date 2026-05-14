@@ -1,5 +1,5 @@
 import type { Booking, Flight } from '../../types';
-import { Card, Button } from '../common';
+import { Card, Button, SeatClassBadge } from '../common';
 import { Plane, Calendar, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { formatDate, formatCurrency } from '../../utils/formatters';
 import { motion } from 'framer-motion';
@@ -64,6 +64,7 @@ export const BookingCard = ({ booking, flight, onCancel, isCancelling }: Booking
               </div>
             </div>
           </div>
+          <SeatClassBadge seatClass={booking.seat_class} />
         </div>
 
         {/* Flight Details */}
@@ -92,9 +93,9 @@ export const BookingCard = ({ booking, flight, onCancel, isCancelling }: Booking
             </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-white/10">
-              <span className="text-sm text-star-white/60">Price</span>
+              <span className="text-sm text-star-white/60">Price Paid</span>
               <span className="text-lg font-bold text-star-white">
-                {formatCurrency(flight.price)}
+                {formatCurrency(booking.price_paid)}
               </span>
             </div>
           </div>

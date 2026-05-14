@@ -5,10 +5,11 @@ A complete full-stack application for booking interplanetary space travel, featu
 ## 🌟 Features
 
 - **Modern Space-Themed UI** - Beautiful, responsive interface with animated starfield
+- **Three Seat Classes** - Economy, Business, and Galaxium Class with distinct pricing and amenities
 - **Full Booking System** - Browse flights, make bookings, manage reservations
 - **Dual Protocol Backend** - REST API and MCP (Model Context Protocol) support
 - **Type-Safe** - Full TypeScript frontend and Python type hints
-- **Real-Time Updates** - Live flight availability and booking status
+- **Real-Time Updates** - Live flight availability and booking status per class
 - **User Management** - Simple name/email authentication
 - **Production Ready** - Optimized builds and comprehensive error handling
 
@@ -109,16 +110,25 @@ See [booking_system_frontend/README.md](booking_system_frontend/README.md) for:
 
 1. **Browse Flights** - Navigate to the Flights page to see all available routes
 2. **Search & Filter** - Use the search bar to find specific destinations
-3. **Sign In/Register** - Click "Book Now" and enter your name and email
-4. **Confirm Booking** - Review flight details and confirm your reservation
-5. **Manage Bookings** - View and cancel bookings from "My Bookings" page
+3. **Choose Seat Class** - Select from Economy, Business, or Galaxium Class
+4. **Sign In/Register** - Click "Book Now" and enter your name and email
+5. **Confirm Booking** - Review flight details, class amenities, and pricing
+6. **Manage Bookings** - View and cancel bookings from "My Bookings" page
+
+### Seat Classes
+
+- **Economy** - Standard seating, basic meals, standard baggage (Base price)
+- **Business** - Extra legroom, premium meals, priority boarding, increased baggage (1.5x price)
+- **Galaxium Class** - Luxury suite, gourmet dining, VIP lounge access, unlimited baggage, personal concierge (2.5x price)
+
+Each class has separate seat availability and pricing. Sold-out classes are clearly indicated.
 
 ### Demo Data
 
 The system comes pre-seeded with:
 - **10 Users** - Alice, Bob, Charlie, Diana, Eve, Frank, Grace, Heidi, Ivan, Judy
-- **10 Flights** - Routes between Earth, Mars, Moon, Venus, Jupiter, Europa, Pluto
-- **20 Sample Bookings** - Various booking statuses
+- **10 Flights** - Routes between Earth, Mars, Moon, Venus, Jupiter, Europa, Pluto with class-based seating
+- **20 Sample Bookings** - Various booking statuses across different seat classes
 
 ## 🛠️ Technology Stack
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, Literal
 
 
 class FlightOut(BaseModel):
@@ -8,23 +8,36 @@ class FlightOut(BaseModel):
     destination: str
     departure_time: str
     arrival_time: str
-    price: int
-    seats_available: int
+    base_price: int
+    economy_seats: int
+    business_seats: int
+    galaxium_seats: int
 
     class Config:
         from_attributes = True
+
+    @property
+    def business_price(self) -> int:
+        return int(self.base_price * 1.5)
+    
+    @property
+    def galaxium_price(self) -> int:
+        return int(self.base_price * 2.5)
 
 
 class BookingRequest(BaseModel):
     user_id: int
     name: str
     flight_id: int
+    seat_class: Literal['economy', 'business', 'galaxium']
 
 
 class BookingOut(BaseModel):
     booking_id: int
     user_id: int
     flight_id: int
+    seat_class: str
+    price_paid: int
     status: str
     booking_time: str
 

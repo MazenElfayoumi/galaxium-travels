@@ -1,7 +1,8 @@
 import type { Flight } from '../../types';
 import { Card, Button } from '../common';
-import { Plane, Clock, DollarSign, Users } from 'lucide-react';
+import { Plane, Clock, Users } from 'lucide-react';
 import { formatCurrency, formatDate, formatTime, calculateDuration } from '../../utils/formatters';
+import { getAllSeatClassInfo } from '../../utils/seatClass';
 import { motion } from 'framer-motion';
 
 interface FlightCardProps {
@@ -10,8 +11,10 @@ interface FlightCardProps {
 }
 
 export const FlightCard = ({ flight, onBook }: FlightCardProps) => {
-  const isLowSeats = flight.seats_available <= 2;
-  const isSoldOut = flight.seats_available === 0;
+  const seatClasses = getAllSeatClassInfo(flight);
+  const totalSeats = flight.economy_seats + flight.business_seats + flight.galaxium_seats;
+  const isLowSeats = totalSeats <= 2;
+  const isSoldOut = totalSeats === 0;
 
   return (
     <motion.div
@@ -70,20 +73,36 @@ export const FlightCard = ({ flight, onBook }: FlightCardProps) => {
             </span>
           </div>
 
-          {/* Price */}
-          <div className="flex items-center gap-2">
-            <DollarSign size={16} className="text-alien-green" />
-            <span className="text-2xl font-bold text-star-white">
-              {formatCurrency(flight.price)}
-            </span>
-            <span className="text-sm text-star-white/60">per seat</span>
+          {/* Seat Classes */}
+          <div className="space-y-2">
+            <p className="text-xs text-star-white/60 font-semibold">Available Classes:</p>
+            <div className="grid grid-cols-3 gap-2">
+              {/* Economy */}
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-2">
+                <p className="text-xs text-blue-400 font-semibold">Economy</p>
+                <p className="text-lg font-bold text-star-white">{formatCurrency(seatClasses.economy.price)}</p>
+                <p className="text-xs text-star-white/60">{seatClasses.economy.available} seats</p>
+              </div>
+              {/* Business */}
+              <div className="bg-cosmic-purple/10 border border-cosmic-purple/30 rounded-lg p-2">
+                <p className="text-xs text-cosmic-purple font-semibold">Business</p>
+                <p className="text-lg font-bold text-star-white">{formatCurrency(seatClasses.business.price)}</p>
+                <p className="text-xs text-star-white/60">{seatClasses.business.available} seats</p>
+              </div>
+              {/* Galaxium */}
+              <div className="bg-gradient-to-br from-alien-green/10 to-solar-orange/10 border border-alien-green/30 rounded-lg p-2">
+                <p className="text-xs text-alien-green font-semibold">Galaxium</p>
+                <p className="text-lg font-bold text-star-white">{formatCurrency(seatClasses.galaxium.price)}</p>
+                <p className="text-xs text-star-white/60">{seatClasses.galaxium.available} seats</p>
+              </div>
+            </div>
           </div>
 
-          {/* Seats Available */}
+          {/* Total Seats */}
           <div className="flex items-center gap-2">
             <Users size={16} className={isLowSeats ? 'text-solar-orange' : 'text-star-white/70'} />
             <span className={`text-sm ${isLowSeats ? 'text-solar-orange font-semibold' : 'text-star-white/70'}`}>
-              {isSoldOut ? 'Sold Out' : `${flight.seats_available} seats available`}
+              {isSoldOut ? 'Sold Out' : `${totalSeats} total seats available`}
             </span>
           </div>
         </div>

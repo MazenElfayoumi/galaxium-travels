@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import type { Flight } from '../../types';
-import { Modal, Button } from '../common';
+import type { Flight, SeatClass } from '../../types';
+import { Modal, Button, SeatClassSelector } from '../common';
 import { Plane, Calendar, Clock, DollarSign } from 'lucide-react';
 import { formatCurrency, formatDate, calculateDuration } from '../../utils/formatters';
 import { bookFlight, isErrorResponse } from '../../services/api';
 import { useUser } from '../../hooks/useUser';
+import { getSeatClassInfo } from '../../utils/seatClass';
 import toast from 'react-hot-toast';
 
 interface BookingModalProps {
@@ -17,12 +18,21 @@ interface BookingModalProps {
 export const BookingModal = ({ isOpen, onClose, flight, onSuccess }: BookingModalProps) => {
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<SeatClass>('economy');
 
   if (!flight) return null;
+
+  const selectedClassInfo = getSeatClassInfo(flight, selectedClass);
+  const totalPrice = selectedClassInfo.price;
 
   const handleConfirmBooking = async () => {
     if (!user) {
       toast.error('Please sign in to book a flight');
+      return;
+    }
+
+    if (selectedClassInfo.available < 1) {
+      toast.error(`No ${selectedClass} seats available`);
       return;
     }
 
@@ -33,6 +43,7 @@ export const BookingModal = ({ isOpen, onClose, flight, onSuccess }: BookingModa
         user_id: user.user_id,
         name: user.name,
         flight_id: flight.flight_id,
+        seat_class: selectedClass,
       });
 
       if (isErrorResponse(result)) {
@@ -40,7 +51,7 @@ export const BookingModal = ({ isOpen, onClose, flight, onSuccess }: BookingModa
         return;
       }
 
-      toast.success('Flight booked successfully!');
+      toast.success(`Flight booked successfully in ${selectedClass} class!`);
       onSuccess();
       onClose();
     } catch (error: any) {
@@ -110,6 +121,13 @@ export const BookingModal = ({ isOpen, onClose, flight, onSuccess }: BookingModa
           </div>
         </div>
 
+        {/* Seat Class Selection */}
+        <SeatClassSelector
+          flight={flight}
+          selectedClass={selectedClass}
+          onSelectClass={setSelectedClass}
+        />
+
         {/* Passenger Info */}
         {user && (
           <div className="glass-card p-4 bg-white/5">
@@ -128,7 +146,7 @@ export const BookingModal = ({ isOpen, onClose, flight, onSuccess }: BookingModa
             <span className="text-white font-semibold">Total Price</span>
           </div>
           <span className="text-2xl font-bold text-white">
-            {formatCurrency(flight.price)}
+            {formatCurrency(totalPrice)}
           </span>
         </div>
 
